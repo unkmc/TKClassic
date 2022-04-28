@@ -49,7 +49,7 @@ export class DatHandler extends FileHandler {
   private readDatFileMetaData() {
     const dataBeginLocation: number = this.read(DataType.uint32_t);
     const fileName = this.readString();
-    console.log(`Found file in DAT: ${fileName}`);
+    // console.log(`Found file in DAT: ${fileName}`);
     const remainingZeros = this.maxFileNameLength - fileName.length;
     const fileNamePad = this.readChunk(remainingZeros);
     const endOfCurrentMetadata = this.filePosition;
@@ -76,7 +76,7 @@ export class DatHandler extends FileHandler {
     if (fileName.toLowerCase().endsWith('.epf')) {
       metaData.fileHandler = new EpfHandler(buffer);
     }
-    console.log(`Inserting metadata for file: ${fileName}`);
+    // console.log(`Inserting metadata for file: ${fileName}`);
     this.datFileMetaData.set(fileName, metaData);
     this.seekTo(endOfCurrentMetadata);
   }
@@ -87,12 +87,12 @@ export class DatHandler extends FileHandler {
     this.isBaram = isBaram;
     this.maxFileNameLength = isBaram ? 32 : 13;
     this.fileCount = this.read(DataType.uint32_t);
-    console.log(`File count should be: ${this.fileCount}`);
+    // console.log(`File count should be: ${this.fileCount}`);
     this.datFileMetaData = new Map();
     for (let index = 0; index < this.fileCount; index++) {
       this.readDatFileMetaData();
     };
-    console.log(`Total Files found: ${this.datFileMetaData.size}`);
+    // console.log(`Total Files found: ${this.datFileMetaData.size}`);
   }
 
   public getByteSize(): number {
@@ -102,7 +102,7 @@ export class DatHandler extends FileHandler {
       byteCount += this.maxFileNameLength;
       if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
       if (metaData[1].fileHandler) {
-        console.log(`FileHandler for ${metaData[1].fileName} reports size: ${metaData[1].fileHandler.getByteSize()}`);
+        // console.log(`FileHandler for ${metaData[1].fileName} reports size: ${metaData[1].fileHandler.getByteSize()}`);
         byteCount += metaData[1].fileHandler.getByteSize();
       } else {
         byteCount += metaData[1].fileSize;

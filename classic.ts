@@ -19,6 +19,7 @@ const ntkDatHandlers: DatHandlerEntry[] = fs.readdirSync(Configuration.ntk.dataD
   .filter((fileName) => fileName.toLowerCase().includes('body'))
   .sort(FileUtils.SortByNumericalPart)
   .map((fileName) => {
+    console.log(`Parsing NTK dat file: ${fileName}`);
     return {
       fileName,
       datHandler: new DatHandler(`${Configuration.ntk.dataDirectory}\\${fileName}`, false),
@@ -47,6 +48,7 @@ const baramDatHandlers: DatHandlerEntry[] = fs.readdirSync(Configuration.baram.d
   .filter((fileName) => fileName.toLowerCase().includes('c_body'))
   .sort(FileUtils.SortByNumericalPart)
   .map((fileName) => {
+    console.log(`Parsing Baram dat file: ${fileName}`);
     return {
       fileName,
       datHandler: new DatHandler(`${Configuration.baram.dataDirectory}\\${fileName}`, true),
@@ -79,6 +81,7 @@ for (
   i <= Configuration.body.validSwapIndexRange[1];
   i++
 ) {
+  console.log(`Overwriting frames for body ${i} of ${Configuration.body.validSwapIndexRange[1]}`);
   Configuration.body.baramToNtkFrameOffsetMap.forEach((frameMap) => {
     const baramIndex = baramFrameIndex + frameMap[0] as number;
     const ntkIndex = ntkFrameIndex + frameMap[1] as number;

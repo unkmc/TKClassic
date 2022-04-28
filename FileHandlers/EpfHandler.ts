@@ -10,24 +10,11 @@ export class EpfHandler extends FileHandler {
   public static HEADER_SIZE = 0xC;
   public static FRAME_SIZE = 0x10;
 
-  // public static CreateFromDats(prefix: string, isBaram: boolean): EpfHandler[] {
-  //   const result: EpfHandler[] = [];
-  //   const datHandlers: DatHandler[] = DatHandler.CreateFromPrefix(prefix, isBaram);
-  //   for (let i = 0; i < datHandlers.length; i++) {
-  //     const buffer: Buffer = datHandlers[i].datFileMetaData.get(`${prefix}${i}.epf`).buffer;
-  //     result.push(new EpfHandler(buffer));
-  //   }
-
-  //   return result;
-  // }
-
-
   public bitBlt: number;
   public frameCount: number;
   public height: number;
   public pixelDataLength: number;
   public width: number;
-  // public dataSize: number;
   public frames: Frame[] = [];
 
   public constructor(filePath: string);
@@ -69,10 +56,9 @@ export class EpfHandler extends FileHandler {
     const height = (bottom - top);
     const pixelDataOffset = this.read(DataType.uint32_t) + EpfHandler.HEADER_SIZE;
     const stencilDataOffset = this.read(DataType.uint32_t) + EpfHandler.HEADER_SIZE;
-    if (index == 0) {
-      console.log(`First frame reports pixel data offset: ${pixelDataOffset}`);
-    }
-
+    // if (index == 0) {
+    //   console.log(`First frame reports pixel data offset: ${pixelDataOffset}`);
+    // }
     // if (index <= 1) {
     //   console.log(`Read frame metadata @ ${frameDataOffset}: ${JSON.stringify({
     //     top,
@@ -127,22 +113,22 @@ export class EpfHandler extends FileHandler {
 
   public getByteBuffer(): Buffer {
     const byteSize = this.getByteSize();
-    console.log(`EPF handler reports byte size of ${byteSize}`);
-    console.log(`Original           byte size was ${this.buffer.length}`);
+    // console.log(`EPF handler reports byte size of ${byteSize}`);
+    // console.log(`Original           byte size was ${this.buffer.length}`);
     const buffer = Buffer.alloc(byteSize, 0);
     let headerPosition = 0;
     const actualPixelDataLength = this.getActualPixelDataLength();
-    console.log(`Calculated data length is      : ${actualPixelDataLength}`);
-    console.log(`Originally read data length was: ${this.pixelDataLength}`);
+    // console.log(`Calculated data length is      : ${actualPixelDataLength}`);
+    // console.log(`Originally read data length was: ${this.pixelDataLength}`);
     buffer.writeInt16LE(this.frameCount, headerPosition); headerPosition += 2;
     buffer.writeInt16LE(this.width, headerPosition); headerPosition += 2;
     buffer.writeInt16LE(this.height, headerPosition); headerPosition += 2;
     buffer.writeInt16LE(this.bitBlt, headerPosition); headerPosition += 2;
     buffer.writeUInt32LE(actualPixelDataLength, headerPosition); headerPosition += 4;
-    console.log(`After writing header, write position is now ${headerPosition}`);
+    // console.log(`After writing header, write position is now ${headerPosition}`);
     let tableOfContentsPosition = EpfHandler.HEADER_SIZE + actualPixelDataLength;
-    console.log(`Original table of contents position was  ${EpfHandler.HEADER_SIZE + this.pixelDataLength}`);
-    console.log(`Calculated table of contents position is ${tableOfContentsPosition}`);
+    // console.log(`Original table of contents position was  ${EpfHandler.HEADER_SIZE + this.pixelDataLength}`);
+    // console.log(`Calculated table of contents position is ${tableOfContentsPosition}`);
     let pixelDataPosition = headerPosition;
     for (let i = 0; i < this.frameCount; i++) {
       const frame: Frame = this.frames[i] as Frame;
@@ -153,7 +139,7 @@ export class EpfHandler extends FileHandler {
       buffer.writeInt16LE(frame.bottom, tableOfContentsPosition); tableOfContentsPosition += 2;
       buffer.writeInt16LE(frame.right, tableOfContentsPosition); tableOfContentsPosition += 2;
       const pixelDataOffset = pixelDataPosition;
-      if (i == 0) console.log(`writing first frame pixel data position of ${pixelDataPosition} at ${tableOfContentsPosition}`);
+      // if (i == 0) console.log(`writing first frame pixel data position of ${pixelDataPosition} at ${tableOfContentsPosition}`);
       buffer.writeUInt32LE(pixelDataPosition - EpfHandler.HEADER_SIZE, tableOfContentsPosition); tableOfContentsPosition += 4;
       frame.rawPixelData.copy(buffer, pixelDataPosition); pixelDataPosition += frame.rawPixelData.length;
       const stencilDataOffset = pixelDataPosition;
