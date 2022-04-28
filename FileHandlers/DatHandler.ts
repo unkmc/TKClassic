@@ -3,6 +3,7 @@ import { DataType } from "./DataType";
 import { FileHandler } from "./FileHandler";
 import fs from 'fs';
 import { FileUtils } from "./FileUtils";
+import { EpfHandler } from "./EpfHandler";
 
 export interface DatFileMetaData {
   dataBeginLocation: number;
@@ -10,6 +11,7 @@ export interface DatFileMetaData {
   fileNamePad: Buffer;
   fileSize: number;
   buffer: Buffer;
+  fileHandler?: any;
 }
 
 export class DatHandler extends FileHandler {
@@ -50,15 +52,18 @@ export class DatHandler extends FileHandler {
       fileNamePad,
       fileSize,
     }, null, 2)}`);
-    this.datFileMetaData
-      .set(fileName,
-        {
-          dataBeginLocation,
-          fileName,
-          fileNamePad,
-          fileSize,
-          buffer,
-        });
+
+    const metaData:DatFileMetaData = {
+      dataBeginLocation,
+      fileName,
+      fileNamePad,
+      fileSize,
+      buffer,
+    };
+    if(fileName.toLowerCase(). endsWith('.epf')){
+      metaData.fileHandler = new EpfHandler(buffer);
+    }
+    this.datFileMetaData.set(fileName, metaData);
     this.seekTo(endOfCurrentMetadata);
   }
 

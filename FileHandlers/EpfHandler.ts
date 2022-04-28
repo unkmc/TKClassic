@@ -28,6 +28,8 @@ export class EpfHandler extends FileHandler {
   public pixelDataLength: number;
   public width: number;
   public dataSize: number;
+  public frames: Map<number, Frame>;
+
   public constructor(filePath: string);
   public constructor(buffer: Buffer);
   constructor(...parameters: any[]) {
@@ -38,9 +40,15 @@ export class EpfHandler extends FileHandler {
     this.bitBlt = this.read(DataType.int16_t);
     this.pixelDataLength = this.read(DataType.uint16_t);
     this.dataSize = 0;
+    for (let i = 0; i < this.frameCount; i++) {
+      this.getFrame(i);
+    }
   }
 
   public getFrame(index: number): Frame {
+    if (this.frames.has(index)) {
+      return this.frames.get(index);
+    }
     this.seekTo(EpfHandler.HEADER_SIZE + this.pixelDataLength + (index * EpfHandler.FRAME_SIZE));
     // Seek to frame data & read it
     const top = this.read(DataType.uint16_t, false);
@@ -67,7 +75,22 @@ export class EpfHandler extends FileHandler {
       rawStencilData: stencil.rawData,
       stencil
     };
-    //TODO: cache?
+    this.frames.set(index, frame);
     return frame;
+  }
+
+  public getByteSize(): number {
+    let byteCount = 2; // frameCount
+    byteCount += 2; // width
+    byteCount += 2; // height
+    byteCount += 2; // bitBlt
+    byteCount += 2; // pixelDataLength
+
+    return byteCount;
+  }
+
+  public writeToFile(filePath: string) {
+
+    const buffer = Buffer.alloc(this.getByteSize(), 0);
   }
 }
