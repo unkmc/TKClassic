@@ -1,6 +1,10 @@
 export const Configuration = {
-  ntkDataDirectory: "C:\\Program Files (x86)\\KRU\\NexusTK\\Data",
-  baramDataDirectory: "C:\\Nexon\\Kingdom of the Winds\\Data",
-  ntkDatDumpDirectory: "E:\\Reversing\\NTK\\dat\\ntk",
-  baramDatDumpDirectory: "E:\\Reversing\\NTK\\dat\\baram"
+  ntk: {
+    dataDirectory: "C:\\Program Files (x86)\\KRU\\NexusTK\\Data",
+    datDumpDirectory: "E:\\Reversing\\NTK\\dat\\ntk",
+  },
+  baram: {
+    dataDirectory: "C:\\Nexon\\Kingdom of the Winds\\Data",
+    datDumpDirectory: "E:\\Reversing\\NTK\\dat\\baram",
+  }
 }
