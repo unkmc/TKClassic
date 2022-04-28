@@ -1,3 +1,12 @@
+export interface SimpleSwap {
+  name:string;
+  validSwapIndexRange: number[];
+  framesPer: {
+    baram: number;
+    ntk: number;
+  };
+}
+
 export const Configuration = {
   ntk: {
     dataDirectory: "C:\\Program Files (x86)\\KRU\\NexusTK\\Data",
@@ -9,8 +18,8 @@ export const Configuration = {
   },
   body: {
     // Classic sprites only available for some armors
-    validSwapIndexRange: [2, 126], 
-    framesPerBody: { baram: 103, ntk: 80, },
+    validSwapIndexRange: [2, 126],
+    framesPer: { baram: 103, ntk: 80, },
     baramToNtkFrameOffsetMap: [
       // There are more frames in baram than NTK
       // So, we need to map baram frames onto NTK frames
@@ -97,5 +106,25 @@ export const Configuration = {
       [101, 78],
       [102, 79],
     ]
-  }
+  },
+  sword: {
+    name:'sword',
+    validSwapIndexRange: [0, 147],
+    framesPer: { baram: 19, ntk: 19, },
+  } as SimpleSwap,
+  spear: {
+    name:'spear',
+    validSwapIndexRange: [0, 50],
+    framesPer: { baram: 19, ntk: 19, },
+  } as SimpleSwap,
+  shield: {
+    name:'shield',
+    validSwapIndexRange: [0, 25],
+    framesPer: { baram: 19, ntk: 19, },
+  },
+  fan: {
+    name:'fan',
+    validSwapIndexRange: [0, 5],
+    framesPer: { baram: 19, ntk: 19, },
+  } as SimpleSwap,
 }
