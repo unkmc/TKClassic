@@ -33,6 +33,19 @@ export class DatHandler extends FileHandler {
   public datFileMetaData: Map<string, DatFileMetaData>;
   private maxFileNameLength: number;
 
+  public getOnlyFileName(): string {
+    let result: string = "";
+    for (let meta of this.datFileMetaData) {
+      if (meta[0] !== "") {
+        if (result !== "") {
+          throw new Error("Attempted to retrieve \"only\" file from DAT with multiple files!");
+        }
+        result = meta[0];
+      }
+    }
+    return result;
+  }
+
   private readDatFileMetaData() {
     const dataBeginLocation: number = this.read(DataType.uint32_t);
     const fileName = this.readString();

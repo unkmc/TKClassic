@@ -28,7 +28,7 @@ export class EpfHandler extends FileHandler {
   public pixelDataLength: number;
   public width: number;
   // public dataSize: number;
-  public frames: { [key: string]: Frame } = {};
+  public frames: Frame[] = [];
 
   public constructor(filePath: string);
   public constructor(buffer: Buffer);
