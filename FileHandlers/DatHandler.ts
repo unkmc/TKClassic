@@ -112,4 +112,10 @@ export class DatHandler extends FileHandler {
     }
     fs.writeFileSync(filePath, buffer);
   }
+
+  public unpackFiles(filePath: string) {
+    for (let metaData of this.datFileMetaData) {
+      fs.writeFileSync(`${filePath}\\${metaData[0]}`, metaData[1].buffer);
+    }
+  }
 }

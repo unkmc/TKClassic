@@ -9,3 +9,9 @@ if (!fs.existsSync(Configuration.ntk.datDumpDirectory)) {
   fs.mkdirSync(Configuration.ntk.datDumpDirectory);
 }
 asdf.writeToFile(`${Configuration.ntk.datDumpDirectory}\\char.dat.wrote`);
+
+const charDatSubdirectory = `${Configuration.ntk.datDumpDirectory}\\char.dat`;
+if (!fs.existsSync(charDatSubdirectory)) {
+  fs.mkdirSync(charDatSubdirectory);
+}
+asdf.unpackFiles(charDatSubdirectory);
