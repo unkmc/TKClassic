@@ -1,19 +1,28 @@
 import { Configuration } from "./Configuration";
 import { DatHandler } from "./FileHandlers/DatHandler";
 import fs from 'fs';
+import { EpfHandler } from "./FileHandlers/EpfHandler";
 
-// const charDatHandler: DatHandler = new DatHandler(`${Configuration.ntk.dataDirectory}\\char.dat`, false);
-// if (!fs.existsSync(Configuration.ntk.datDumpDirectory)) fs.mkdirSync(Configuration.ntk.datDumpDirectory);
-// charDatHandler.writeToFile(`${Configuration.ntk.datDumpDirectory}\\char.dat.wrote`);
-// const charDatSubdirectory = `${Configuration.ntk.datDumpDirectory}\\char.dat`;
-// if (!fs.existsSync(charDatSubdirectory)) fs.mkdirSync(charDatSubdirectory);
-// charDatHandler.unpackFiles(charDatSubdirectory);
+// unpackDat(Configuration.ntk.dataDirectory, 'char.dat', false, Configuration.ntk.datDumpDirectory);
+// unpackDat(Configuration.baram.dataDirectory, 'char.dat', true, Configuration.baram.datDumpDirectory);
+
+unpackDat(Configuration.ntk.dataDirectory, 'body0.dat', false, Configuration.ntk.datDumpDirectory);
+// unpackDat(Configuration.baram.dataDirectory, 'C_Body0.dat', true, Configuration.baram.datDumpDirectory);
+
+console.log(`  Instantiating EPF handler...`);
+const body0EpfHandler:EpfHandler = new EpfHandler(`${Configuration.ntk.datDumpDirectory}\\body0.dat\\Body0.epf.unpacked`);
+console.log(`  Writing EPF to file...`);
+body0EpfHandler.writeToFile(`${Configuration.ntk.datDumpDirectory}\\body0.dat\\Body0.epf.EpfHandler`);
 
 
-
-const body0DatHandler: DatHandler = new DatHandler(`${Configuration.ntk.dataDirectory}\\Body0.dat`, false);
-if (!fs.existsSync(Configuration.ntk.datDumpDirectory)) fs.mkdirSync(Configuration.ntk.datDumpDirectory);
-body0DatHandler.writeToFile(`${Configuration.ntk.datDumpDirectory}\\Body0.dat.wrote`);
-const body0DatSubdirectory = `${Configuration.ntk.datDumpDirectory}\\Body0.dat`;
-if (!fs.existsSync(body0DatSubdirectory)) fs.mkdirSync(body0DatSubdirectory);
-body0DatHandler.unpackFiles(body0DatSubdirectory);
+function unpackDat(dataDirectory: string, fileName: string, isBaram: boolean, dumpDirectory: string) {
+  console.log(`  Instantiating DatHandler...`);
+  const datHandler: DatHandler = new DatHandler(`${dataDirectory}\\${fileName}`, isBaram);
+  if (!fs.existsSync(dumpDirectory)) fs.mkdirSync(dumpDirectory);
+  console.log(`  Writing dat file...`);
+  datHandler.writeToFile(`${dumpDirectory}\\${fileName}.clean`);
+  const subdirectory = `${dumpDirectory}\\${fileName}`;
+  console.log(`  Unpacking dat file...`);
+  if (!fs.existsSync(subdirectory)) fs.mkdirSync(subdirectory);
+  datHandler.unpackFiles(subdirectory);
+}

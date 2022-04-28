@@ -7,7 +7,7 @@ import { stringify } from 'querystring';
  * Contains basic file operations like reading/writing bytes
  */
 export class FileHandler {
-  
+
   public constructor(filePath: string);
   public constructor(buffer: Buffer);
   public constructor(...parameters: any[]) {
@@ -46,7 +46,7 @@ export class FileHandler {
         }
         this.filePosition += 2;
         break;
-      case DataType.uint16_t:
+      case DataType.int16_t:
         if (littleEndian) {
           value = this.buffer.readInt16LE(this.filePosition);
         } else {

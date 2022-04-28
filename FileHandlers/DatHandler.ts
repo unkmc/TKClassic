@@ -11,7 +11,7 @@ export interface DatFileMetaData {
   fileNamePad: Buffer;
   fileSize: number;
   buffer: Buffer;
-  fileHandler?: any;
+  fileHandler?: EpfHandler;
 }
 
 export class DatHandler extends FileHandler {
@@ -46,23 +46,24 @@ export class DatHandler extends FileHandler {
     const buffer = fileName === ""
       ? Buffer.alloc(0)
       : this.readChunk(fileSize);
-    console.log(`  File details: ${JSON.stringify({
-      dataBeginLocation,
-      fileName,
-      fileNamePad,
-      fileSize,
-    }, null, 2)}`);
+    // console.log(`  File details: ${JSON.stringify({
+    //   dataBeginLocation,
+    //   fileName,
+    //   fileNamePad,
+    //   fileSize,
+    // }, null, 2)}`);
 
-    const metaData:DatFileMetaData = {
+    const metaData: DatFileMetaData = {
       dataBeginLocation,
       fileName,
       fileNamePad,
       fileSize,
       buffer,
     };
-    if(fileName.toLowerCase(). endsWith('.epf')){
+    if (fileName.toLowerCase().endsWith('.epf')) {
       metaData.fileHandler = new EpfHandler(buffer);
     }
+    console.log(`Inserting metadata for file: ${fileName}`);
     this.datFileMetaData.set(fileName, metaData);
     this.seekTo(endOfCurrentMetadata);
   }
@@ -87,7 +88,21 @@ export class DatHandler extends FileHandler {
       byteCount += 4; // dataBeginLocation
       byteCount += this.maxFileNameLength;
       if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
-      byteCount += metaData[1].fileSize;
+      if (metaData[1].fileHandler) {
+        console.log(`FileHandler for ${metaData[1].fileName} reports size: ${metaData[1].fileHandler.getByteSize()}`);
+        byteCount += metaData[1].fileHandler.getByteSize();
+      } else {
+        byteCount += metaData[1].fileSize;
+      }
+    }
+    return byteCount;
+  }
+
+  public getTableOfContentsLength(): number {
+    let byteCount = 4; // fileCount
+    for (let metaData of this.datFileMetaData) {
+      byteCount += 4; // dataBeginLocation
+      byteCount += this.maxFileNameLength;
     }
     return byteCount;
   }
@@ -96,12 +111,12 @@ export class DatHandler extends FileHandler {
     const buffer = Buffer.alloc(this.getByteSize(), 0);
     let bufferPosition = 0;
     buffer.writeUint32LE(this.fileCount, bufferPosition); bufferPosition += 4
+    let tableOfContentsPosition = bufferPosition;
+    let dataPosition = this.getTableOfContentsLength();
     for (let metaData of this.datFileMetaData) {
-      buffer.writeUint32LE(metaData[1].dataBeginLocation, bufferPosition); bufferPosition += 4;
-      // console.log(`bufferPosition: ${bufferPosition}`);
-      // console.log(`Writing data for file: ${metaData[1].fileName}`);
-      buffer.write(metaData[1].fileName, bufferPosition); bufferPosition += metaData[1].fileName.length;
-      metaData[1].fileNamePad.copy(buffer, bufferPosition); bufferPosition += metaData[1].fileNamePad.length;
+      buffer.writeUint32LE(dataPosition, tableOfContentsPosition); tableOfContentsPosition += 4;
+      buffer.write(metaData[1].fileName, tableOfContentsPosition); tableOfContentsPosition += metaData[1].fileName.length;
+      metaData[1].fileNamePad.copy(buffer, tableOfContentsPosition); tableOfContentsPosition += metaData[1].fileNamePad.length;
 
       // console.log(`Copying file data w/ options: ${JSON.stringify({
       //   "metaData[1].buffer.length": metaData[1].buffer.length,
@@ -110,20 +125,23 @@ export class DatHandler extends FileHandler {
       //   sourceEnd: metaData[1].dataBeginLocation + metaData[1].fileSize
       // }, null, 2)}`);
       if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
-      metaData[1].buffer.copy(
-        buffer,
-        metaData[1].dataBeginLocation,
-        // metaData[1].dataBeginLocation,
-        // metaData[1].dataBeginLocation + metaData[1].fileSize,
-      );
+      if (metaData[1].fileHandler) {
+        const realBuffer = metaData[1].fileHandler.getByteBuffer();
+        realBuffer.copy(buffer, dataPosition);
+        dataPosition += realBuffer.length;
+      } else {
+        metaData[1].buffer.copy(buffer, dataPosition);
+        dataPosition += metaData[1].buffer.length;
+      }
     }
     fs.writeFileSync(filePath, buffer);
+    console.log(`DAT file written to ${filePath}`);
   }
 
   public unpackFiles(filePath: string) {
     for (let metaData of this.datFileMetaData) {
       if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
-      fs.writeFileSync(`${filePath}\\${metaData[0]}`, metaData[1].buffer);
+      fs.writeFileSync(`${filePath}\\${metaData[0]}.unpacked`, metaData[1].buffer);
     }
   }
 }

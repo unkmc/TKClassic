@@ -6,7 +6,7 @@ export class Stencil {
   public rows: boolean[][];
   public rawData: Buffer;
   constructor(epfHandler: EpfHandler, stencilDataOffset: number, width: number, height: number) {
-    epfHandler.seekTo(EpfHandler.HEADER_SIZE + stencilDataOffset);
+    epfHandler.seekTo(stencilDataOffset);
 
     // Rows are boolean arrays (true/false) representing whether or not to draw an individual pixel of *that* row.
     this.rows = [];
