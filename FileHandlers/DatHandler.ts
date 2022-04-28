@@ -41,7 +41,9 @@ export class DatHandler extends FileHandler {
     const nextDataBeginLocation = this.read(DataType.uint32_t);
     const fileSize = nextDataBeginLocation - dataBeginLocation;
     this.seekTo(dataBeginLocation);
-    const buffer = this.readChunk(fileSize);
+    const buffer = fileName === ""
+      ? Buffer.alloc(0)
+      : this.readChunk(fileSize);
     console.log(`  File details: ${JSON.stringify({
       dataBeginLocation,
       fileName,
@@ -79,7 +81,7 @@ export class DatHandler extends FileHandler {
     for (let metaData of this.datFileMetaData) {
       byteCount += 4; // dataBeginLocation
       byteCount += this.maxFileNameLength;
-      if (metaData[1].fileName == "") continue; // The "null entry" needs no data written.
+      if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
       byteCount += metaData[1].fileSize;
     }
     return byteCount;
@@ -102,7 +104,7 @@ export class DatHandler extends FileHandler {
       //   sourceStart: metaData[1].dataBeginLocation,
       //   sourceEnd: metaData[1].dataBeginLocation + metaData[1].fileSize
       // }, null, 2)}`);
-      if (metaData[1].fileName == "") continue; // The "null entry" needs no data written.
+      if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
       metaData[1].buffer.copy(
         buffer,
         metaData[1].dataBeginLocation,
@@ -115,6 +117,7 @@ export class DatHandler extends FileHandler {
 
   public unpackFiles(filePath: string) {
     for (let metaData of this.datFileMetaData) {
+      if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
       fs.writeFileSync(`${filePath}\\${metaData[0]}`, metaData[1].buffer);
     }
   }
