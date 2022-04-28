@@ -3,7 +3,7 @@ At some point, Baram released some kind of "Classic" mode. They remastered some 
 
 This project attempts to extract that remastered frame data from Baram, overwrite the corresponding frames in NTK data files, then pack those files back up so the NTK client can display them. 
 
-![west-gate](https://github.com/unkmc/TKClassic/blob/main/2022-04-26.png)
+![west-gate](https://github.com/unkmc/TKClassic/blob/main/2022-04-27.png)
 
 ## Prerequisites
   * The Baram client. This one might be tough, but I know it's out there.
