@@ -4,9 +4,9 @@ import fs from 'fs';
 import { EpfHandler } from "./FileHandlers/EpfHandler";
 
 // unpackDat(Configuration.ntk.dataDirectory, 'char.dat', false, Configuration.ntk.datDumpDirectory);
-// unpackDat(Configuration.baram.dataDirectory, 'char.dat', true, Configuration.baram.datDumpDirectory);
+unpackDat(Configuration.baram.dataDirectory, 'char.dat', true, Configuration.baram.datDumpDirectory);
 
-unpackDat(Configuration.ntk.dataDirectory, 'body0.dat', false, Configuration.ntk.datDumpDirectory);
+// unpackDat(Configuration.ntk.dataDirectory, 'body0.dat', false, Configuration.ntk.datDumpDirectory);
 // unpackDat(Configuration.baram.dataDirectory, 'C_Body0.dat', true, Configuration.baram.datDumpDirectory);
 
 console.log(`  Instantiating EPF handler...`);

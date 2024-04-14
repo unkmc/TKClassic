@@ -17,6 +17,7 @@ export class FileHandler {
       this.buffer = parameters[0];
     } else if (typeof parameters[0] === "string") {
       this.filePath = parameters[0];
+      console.log(`Will read file: ${parameters[0]}`);
       this.buffer = fs.readFileSync(parameters[0]);
     } else {
       throw new Error("Invalid parameters for FileHandler. First parameter must be Buffer or string.");

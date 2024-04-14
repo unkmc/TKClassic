@@ -14,7 +14,7 @@ export const Configuration = {
   },
   baram: {
     dataDirectory: "C:\\Nexon\\Kingdom of the Winds\\Data",
-    datDumpDirectory: "E:\\Reversing\\NTK\\dat\\baram",
+    datDumpDirectory: ".",
   },
   body: {
     // Classic sprites only available for some armors

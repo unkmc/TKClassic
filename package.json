@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "classic": "ts-node classic.ts"
+    "classic": "ts-node classic.ts",
+    "extract-baram-dats": "ts-node extractBaramDats.ts"
   },
   "repository": {
     "type": "git",

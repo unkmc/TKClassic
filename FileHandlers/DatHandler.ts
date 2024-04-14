@@ -151,10 +151,12 @@ export class DatHandler extends FileHandler {
     console.log(`DAT file written to ${filePath}`);
   }
 
-  public unpackFiles(filePath: string) {
+  public unpackFiles(targetPath: string) {
     for (let metaData of this.datFileMetaData) {
       if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
-      fs.writeFileSync(`${filePath}\\${metaData[0]}.unpacked`, metaData[1].buffer);
+      const filePath = `${targetPath}\\${metaData[0]}`;
+      console.log(`Writing file: ${filePath}`);
+      fs.writeFileSync(filePath, metaData[1].buffer);
     }
   }
 }
