@@ -4,6 +4,7 @@ import { EpfHandler } from "./FileHandlers/EpfHandler";
 import { Frame } from "./FileHandlers/Frame";
 import { FileUtils } from "./FileHandlers/FileUtils";
 import fs from 'fs';
+import path from "path";
 
 interface DatHandlerEntry {
   fileName: string,
@@ -23,7 +24,7 @@ export function handle() {
       console.log(`Parsing NTK dat file: ${fileName}`);
       return {
         fileName,
-        datHandler: new DatHandler(`${Configuration.ntk.dataDirectory}\\${fileName}`, false),
+        datHandler: new DatHandler(path.join(Configuration.ntk.dataDirectory, fileName), false),
       }
     });
   const ntkDatFileMetaData: DatMetaEntry[] = ntkDatHandlers.map((entry) => {
@@ -53,7 +54,7 @@ export function handle() {
       console.log(`Parsing Baram dat file: ${fileName}`);
       return {
         fileName,
-        datHandler: new DatHandler(`${Configuration.baram.dataDirectory}\\${fileName}`, true),
+        datHandler: new DatHandler(path.join(Configuration.baram.dataDirectory, fileName), true),
       }
     });
   const baramDatFileMetaData: DatMetaEntry[] = baramDatHandlers.map((entry) => {
@@ -94,13 +95,13 @@ export function handle() {
     baramFrameIndex += Configuration.body.framesPer.baram;
   }
 
-  const customDatDumpDirectory = `${Configuration.ntk.datDumpDirectory}\\custom`;
+  const customDatDumpDirectory = path.join(Configuration.ntk.datDumpDirectory, 'custom');
   for (let handler of ntkDatHandlers) {
     const epfName = handler.datHandler.getOnlyFileName();
     const metaData = handler.datHandler.datFileMetaData.get(epfName);
     if (!metaData) throw new Error(`Found no metadata for file name: ${epfName}`);
     const frameCount = ntkFrames.length > 2600 ? 2600 : ntkFrames.length;
     (metaData.fileHandler as EpfHandler).frames = ntkFrames.splice(0, frameCount);
-    handler.datHandler.writeToFile(`${customDatDumpDirectory}\\${handler.fileName}`)
+    handler.datHandler.writeToFile(path.join(customDatDumpDirectory, handler.fileName))
   }
 }

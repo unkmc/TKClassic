@@ -5,6 +5,7 @@ import { Frame } from "./FileHandlers/Frame";
 import { FileUtils } from "./FileHandlers/FileUtils";
 import { DatHandlerEntry, DatMetaEntry } from "./FileHandlers/DataType";
 import fs from 'fs';
+import path from "path";
 
 
 
@@ -19,14 +20,14 @@ function extractBaramDats(targetPath: string) {
   // .map((fileName) => {
   //   return {
   //     fileName,
-  //     datHandler: new DatHandler(`${Configuration.baram.dataDirectory}\\${fileName}`, true),
+  //     datHandler: new DatHandler(path.join(Configuration.baram.dataDirectory, fileName), true),
   //   }
   // });
 
   baramDatFilenames.forEach((fileName) => {
-    const handler = new DatHandler(`${Configuration.baram.dataDirectory}\\${fileName}`, true);
+    const handler = new DatHandler(path.join(Configuration.baram.dataDirectory, fileName), true);
     const outputDirectoryName = fileName.replace('.dat', '');
-    const outputDirectoryPath = `${targetPath}\\${outputDirectoryName}`;
+    const outputDirectoryPath = path.join(targetPath, outputDirectoryName);
     console.log(`Extracting files from ${fileName} into ${outputDirectoryPath}`);
     if (!fs.existsSync(outputDirectoryPath)) {
       fs.mkdirSync(outputDirectoryPath);
