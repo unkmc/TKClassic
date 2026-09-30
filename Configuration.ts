@@ -1,3 +1,5 @@
+import path from 'path';
+
 export interface SimpleSwap {
   name:string;
   validSwapIndexRange: number[];
@@ -8,13 +10,14 @@ export interface SimpleSwap {
 }
 
 export const Configuration = {
+  releaseDirectory: path.resolve(__dirname, 'Release'),
   ntk: {
-    dataDirectory: "C:\\Program Files (x86)\\KRU\\NexusTK\\Data",
-    datDumpDirectory: "E:\\Reversing\\NTK\\dat\\ntk",
+    dataDirectory: path.resolve(__dirname, 'nexus', 'Data'),
+    datDumpDirectory: path.resolve(__dirname, 'Dump', 'nexus'),
   },
   baram: {
-    dataDirectory: "C:\\Nexon\\Kingdom of the Winds\\Data",
-    datDumpDirectory: ".",
+    dataDirectory: path.resolve(__dirname, 'baram', 'Data'),
+    datDumpDirectory: path.resolve(__dirname, 'Dump', 'baram'),
   },
   body: {
     // Classic sprites only available for some armors

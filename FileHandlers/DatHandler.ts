@@ -2,6 +2,7 @@ import { Configuration } from "../Configuration";
 import { DataType } from "./DataType";
 import { FileHandler } from "./FileHandler";
 import fs from 'fs';
+import path from 'path';
 import { FileUtils } from "./FileUtils";
 import { EpfHandler } from "./EpfHandler";
 
@@ -21,7 +22,7 @@ export class DatHandler extends FileHandler {
     const datFiles = allFiles
       .filter((fileName) => fileName.toLowerCase().endsWith(".dat"))
       .sort(FileUtils.SortByNumericalPart);
-    const datPaths = datFiles.map((fileName) => `${dataDirectory}\\${fileName}`);
+    const datPaths = datFiles.map((fileName) => path.join(dataDirectory, fileName));
     return datPaths.map((datPath) => {
       return new DatHandler(datPath, isBaram);
     })
@@ -154,7 +155,7 @@ export class DatHandler extends FileHandler {
   public unpackFiles(targetPath: string) {
     for (let metaData of this.datFileMetaData) {
       if (metaData[1].fileName === "") continue; // The "null entry" needs no data written.
-      const filePath = `${targetPath}\\${metaData[0]}`;
+      const filePath = path.join(targetPath, metaData[0]);
       console.log(`Writing file: ${filePath}`);
       fs.writeFileSync(filePath, metaData[1].buffer);
     }

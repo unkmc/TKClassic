@@ -1,6 +1,7 @@
 import { DatHandler } from "./FileHandlers/DatHandler";
 import { Configuration } from "./Configuration";
 import fs from 'fs';
+import path from 'path';
 
 // console.log(`Listing dat file contents with configuration: ${JSON.stringify(Configuration, null, 2)}`);
 
@@ -25,7 +26,7 @@ function extractFilesFromDat(fileNameSubstring: string, isBaram: boolean) {
     }).map((fileName) => {
       return {
         fileName,
-        filePath: `${datDumpPath}\\${fileName}`,
+        filePath: path.join(datPath, fileName),
       };
     });
   console.log(`Found ${datFiles.length} dat files:${JSON.stringify(datFiles, null, 2)}`);
@@ -33,16 +34,16 @@ function extractFilesFromDat(fileNameSubstring: string, isBaram: boolean) {
   for (let fileInfo of datFiles) {
     console.log(`Instantiating DatHandler for ${fileInfo.filePath}`);
     const datHandler = new DatHandler(fileInfo.filePath, isBaram);
-    writeFilesFromDat(`${datDumpPath}\\${fileInfo.fileName}`, datHandler);
+    writeFilesFromDat(path.join(datDumpPath, fileInfo.fileName), datHandler);
   }
 }
 
 
-// const ntkDatHandler: DatHandler = new DatHandler(`${Configuration.ntk.dataDirectory}\\char.dat`, false);
+// const ntkDatHandler: DatHandler = new DatHandler(path.join(Configuration.ntk.dataDirectory, 'char.dat'), false);
 // console.log(`${ntkDatHandler.fileCount} files in NTK char.dat`);
 // extractFilesFromDat(Configuration.ntk.datDumpDirectory, ntkDatHandler);
 
-// const baramDatHandler: DatHandler = new DatHandler(`${Configuration.baram.dataDirectory}\\char.dat`, true);
+// const baramDatHandler: DatHandler = new DatHandler(path.join(Configuration.baram.dataDirectory, 'char.dat'), true);
 // console.log(`${baramDatHandler.fileCount} files in NTK char.dat`);
 // extractFilesFromDat(Configuration.baram.datDumpDirectory, baramDatHandler);
 
@@ -50,7 +51,8 @@ function writeFilesFromDat(basePath: string, datHandler: DatHandler) {
   console.log(`Writing files from dat...`);
   fs.mkdirSync(basePath, { recursive: true });
   for (const fileMetadata of datHandler.datFileMetaData) {
-    const fullPath = `${basePath}\\${fileMetadata[0]}`;
+    if (!fileMetadata[0]) continue;
+    const fullPath = path.join(basePath, fileMetadata[0]);
     console.log(`Writing file: ${fullPath}`);
     fs.writeFileSync(fullPath, fileMetadata[1].buffer);
   }
