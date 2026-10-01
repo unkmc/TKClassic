@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "classic": "ts-node classic.ts",
+    "documentation": "ts-node documentSprites.ts",
     "extract-baram-dats": "ts-node extractBaramDats.ts"
   },
   "repository": {

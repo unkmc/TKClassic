@@ -28,6 +28,8 @@ This project attempts to extract that remastered frame data from Baram, overwrit
 
 To unpack Baram DAT files for inspection, run `npm run extract-baram-dats`. Output defaults to `Dump/baram/`; pass a directory after `--` to use another location. Other inspection scripts use `Dump/baram/` and `Dump/nexus/`. These generated folders and `Release/` are ignored by Git.
 
+Run `npm run documentation` after `npm run classic` to generate the [sprite replacement catalog](./documentation/README.md), with separate pages for body, fan, shield, spear, and sword. Each page compares frame index 6 of affected Nexus sprites with their released replacements and identifies the Baram source frames. Both previews use the Nexus palette. The command reads the existing `Release/` files and stops if a sampled replacement no longer matches the current Baram data.
+
 ### Credits
  * Credit for 95% of file file processing logic goes to TKViewer, thanks guys.
  * The rest goes to Erik Rogers. Thanks for leaving your stuff up.
