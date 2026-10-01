@@ -57,7 +57,9 @@ export function frameToPng(frame: Frame, palette: Buffer): Buffer {
       throw new Error('Frame pixels or stencil do not match frame dimensions');
     }
     for (let y = 0; y < height; y++) {
-      if (frame.stencil.rows[y].length !== width) throw new Error('Invalid stencil row width');
+      // Some EPFs encode runs past the visible width; the frame bounds still
+      // define the pixels that can be drawn.
+      if (frame.stencil.rows[y].length < width) throw new Error('Invalid stencil row width');
       for (let x = 0; x < width; x++) {
         if (!frame.stencil.rows[y][x]) continue;
         const colorOffset = frame.rawPixelData[y * width + x] * 4;

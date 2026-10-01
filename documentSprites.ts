@@ -180,9 +180,13 @@ function main(): void {
 
   try {
     const indexLines = [
-      '# Sprite replacements',
+      '# Character sprite replacements',
       '',
       `Generated from the original Nexus data, the Baram classic data, and the current \`Release/\` DATs. Each category has its own page. Previews show frame index ${previewFrameOffset} of each sprite before and after replacement, using the Nexus palette.`,
+      '',
+      'This catalog covers body, fan, shield, spear, and sword. Monster, riding, and tile mappings and their Release packaging are described in the [classic asset mapping report](mappings/README.md).',
+      '',
+      'To recognize the mobs worth checking in game, see the [mob validation guide](mob-validation.md) with released frame 06 previews.',
       '',
       'Sprite IDs come from the DSC files. The current splice starts writing body frames at sprite 0 even though its configured loop label begins at 2. Weapon writes advance 19 frames per group while DSC sprites have 20 frames, so the affected IDs can differ from the configured loop range.',
       '',
@@ -203,8 +207,12 @@ function main(): void {
     fs.writeFileSync(path.join(temporary, 'README.md'), indexLines.join('\n') + '\n');
 
     const images = path.join(documentation, 'images');
-    fs.rmSync(images, { recursive: true, force: true });
-    fs.renameSync(temporaryImages, images);
+    fs.mkdirSync(images, { recursive: true });
+    for (const category of categories) {
+      const categoryImages = path.join(images, category.name);
+      fs.rmSync(categoryImages, { recursive: true, force: true });
+      fs.renameSync(path.join(temporaryImages, category.name), categoryImages);
+    }
     for (const category of categories) {
       fs.renameSync(path.join(temporary, `${category.name}.md`), path.join(documentation, `${category.name}.md`));
     }

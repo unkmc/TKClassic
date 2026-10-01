@@ -1,5 +1,8 @@
 import { handle as body } from "./Body";
 import { handle as weapon } from "./Weapon";
+import { handle as riding } from "./Riding";
+import { handle as monster } from "./Monster";
+import { handle as tile } from "./Tile";
 import { Configuration } from "./Configuration";
 import fs from 'fs';
 
@@ -20,3 +23,6 @@ fs.mkdirSync(releaseDirectory);
 
 body();
 weapon();
+monster();
+riding();
+tile();

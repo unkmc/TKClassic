@@ -6,6 +6,11 @@
   "scripts": {
     "classic": "ts-node classic.ts",
     "documentation": "ts-node documentSprites.ts",
+    "export-candidates": "ts-node exportCandidates.ts",
+    "mappings": "ts-node analyzeMappings.ts",
+    "validate-mappings": "ts-node exportMappingComparisons.ts",
+    "verify-release": "ts-node verifyRelease.ts",
+    "mob-validation": "ts-node documentMobValidation.ts",
     "extract-baram-dats": "ts-node extractBaramDats.ts"
   },
   "repository": {

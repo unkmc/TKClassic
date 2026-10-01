@@ -106,7 +106,7 @@ export class DatHandler extends FileHandler {
         // console.log(`FileHandler for ${metaData[1].fileName} reports size: ${metaData[1].fileHandler.getByteSize()}`);
         byteCount += metaData[1].fileHandler.getByteSize();
       } else {
-        byteCount += metaData[1].fileSize;
+        byteCount += metaData[1].buffer.length;
       }
     }
     return byteCount;
@@ -147,6 +147,9 @@ export class DatHandler extends FileHandler {
         metaData[1].buffer.copy(buffer, dataPosition);
         dataPosition += metaData[1].buffer.length;
       }
+    }
+    if (dataPosition !== buffer.length) {
+      throw new Error(`DAT size mismatch while writing ${filePath}: ${dataPosition} != ${buffer.length}`);
     }
     fs.writeFileSync(filePath, buffer);
     console.log(`DAT file written to ${filePath}`);
