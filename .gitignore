@@ -4,6 +4,7 @@ nexus/
 dump/
 Dump/
 Release/
+dist/
 documentation/tmp/
 
 

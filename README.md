@@ -40,6 +40,19 @@ Run `npm run mob-validation` after `npm run classic` to regenerate the [mob chec
 
 After generating the mapping report and candidate previews, run `npm run validate-mappings` to build temporary [side-by-side visual comparisons](./documentation/tmp/mapping-validation/README.md) for monster IDs, sampled tiles, tile ID exceptions, and riding.
 
+## Packaging v0.1.0
+
+The release scripts require Bash, `unzip`, `sha256sum`, and either `7z` or `zip`; drafting also requires the GitHub CLI (`gh`) with write access to this repository. Packaging uses multithreaded 7-Zip when available. On Windows, run the scripts in an environment that provides those commands, such as WSL.
+
+1. Run `npm run classic` to regenerate `Release/` from the local game data.
+2. Run `npm run package-release`. This creates and checks `dist/TKClassic-v0.1.0.zip` and `dist/TKClassic-v0.1.0-original-nexus.zip`, each with a SHA-256 checksum file. The first ZIP contains the replacement DAT files under `Release/`; the second contains the corresponding original files under `nexus/Data/`. Run `npm run package-release:verified` when you also want the full sprite and metadata verification before packaging.
+3. Commit the code and documentation, then tag that commit `v0.1.0` and push the commit and tag to GitHub.
+4. Run `npm run draft-release`. It runs the full verification, rebuilds both ZIPs, checks the tag and checksums, then uploads both ZIPs and both checksum files to a **draft** GitHub Release with the prepared notes. Review the draft on GitHub before publishing it.
+
+To restore the original graphics from the backup ZIP, copy its `nexus/Data/*.dat` files into the NexusTK client's `Data` folder, replacing the matching files.
+
+GitHub currently limits each Release asset to [under 2 GiB](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases). The packaging script checks this limit. The generated ZIP and checksum stay in the ignored `dist/` folder.
+
 ### Credits
  * Credit for 95% of file file processing logic goes to TKViewer, thanks guys.
  * The rest goes to Erik Rogers. Thanks for leaving your stuff up.

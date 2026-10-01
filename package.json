@@ -1,6 +1,6 @@
 {
   "name": "tkclassic",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,10 @@
     "validate-mappings": "ts-node exportMappingComparisons.ts",
     "verify-release": "ts-node verifyRelease.ts",
     "mob-validation": "ts-node documentMobValidation.ts",
-    "extract-baram-dats": "ts-node extractBaramDats.ts"
+    "extract-baram-dats": "ts-node extractBaramDats.ts",
+    "package-release": "bash scripts/package-release.sh",
+    "draft-release": "bash scripts/draft-release.sh",
+    "package-release:verified": "npm run verify-release && npm run package-release"
   },
   "repository": {
     "type": "git",
